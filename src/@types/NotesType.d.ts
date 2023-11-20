@@ -1,8 +1,8 @@
 type NotesType = {
-  id: number;
+  id?: number;
   title: string;
   content: string;
   userId: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
