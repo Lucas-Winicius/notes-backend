@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../../services/database";
+import userDatabase from "../../database/user.database";
 
 async function ALL(req: Request, res: Response) {
   const body = req.body;
@@ -8,17 +9,38 @@ async function ALL(req: Request, res: Response) {
     where: {
       nick: body.nick,
       pass: body.pass,
-    }
+    },
   });
 
-  if (!user) {
-    res.status(401).json({
-      message: "wrong user nick or password",
+  if (user) {
+    return res
+      .cookie("UserAuthentication", user?.id, {
+        path: "/",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        httpOnly: true,
+      })
+      .status(201)
+      .json(user);
+  }
+
+  const userExist = await prisma.users.findUnique({
+    where: { nick: body.nick },
+  });
+
+  if (!userExist) {
+    return res.status(401).json({
+      message: "User or pass wrong",
+      status: 401,
     });
   }
 
-  res
-    .cookie("UserAuthentication", user?.id, {
+  const userCreated = await userDatabase.create({
+    nick: body.nick,
+    pass: body.pass,
+  });
+
+  return res
+    .cookie("UserAuthentication", userCreated.id, {
       path: "/",
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
       httpOnly: true,
