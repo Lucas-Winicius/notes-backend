@@ -19,7 +19,7 @@ async function ALL(req: Request, res: Response) {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
         httpOnly: true,
       })
-      .status(201)
+      .status(200)
       .json(user);
   }
 
@@ -27,7 +27,7 @@ async function ALL(req: Request, res: Response) {
     where: { nick: body.nick },
   });
 
-  if (!userExist) {
+  if (userExist) {
     return res.status(401).json({
       message: "User or pass wrong",
       status: 401,
