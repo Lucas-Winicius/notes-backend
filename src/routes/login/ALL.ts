@@ -46,7 +46,7 @@ async function ALL(req: Request, res: Response) {
       httpOnly: true,
     })
     .status(201)
-    .json(user);
+    .json(userCreated);
 }
 
 export default ALL;
