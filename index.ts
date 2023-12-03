@@ -7,7 +7,10 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: process.env.ALLOWED_URL,
+  optionsSuccessStatus: 200
+}));
 app.use(routes);
 
 app.listen(process.env.PORT, () => {
